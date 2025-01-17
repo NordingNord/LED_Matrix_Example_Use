@@ -1,0 +1,52 @@
+5V and (up to) 4A required.
+
+RGB Matrix pin meaning:
+
+Has both input and ouput (used for chaining)
+Only input important for us. Input is described using arrows. (left to right -> input to output)
+
+Three grounds all need to be connected to the ground on the raspberry pi
+
+A, B, C, D are pins that control what rows are written to. Four binary values -> 16 choices of rows. This means that each row is actually two.
+Row 0 and 16 are therefore accessed with 0000.
+
+R1,G1,B1 are the RGB values for the top row (in the example case row 0), whole R2, G2, B2 represent the bottom line (in the example case row 16)
+
+LAT is latch, and decides if we latch the values
+CLK is the clock signal.
+OE is the output enable pin, it switches the LEDs off when transitioning from one row to the next.
+
+A pin guide for arduino can be found at:
+https://learn.adafruit.com/32x16-32x32-rgb-led-matrix/connecting-with-jumper-wires
+adafruit -> RGB LED Matrix Basics -> Connecting with jumper wires
+
+A pin guide for raspberry pi can be found at:
+https://github.com/hzeller/rpi-rgb-led-matrix/blob/master/wiring.md
+rpi-rgb-led-matrix -> wiring.md
+
+Library for controlling the matrix with raspberry pi:
+https://github.com/hzeller/rpi-rgb-led-matrix/tree/master
+rpi-rgb-led-matrix
+
+We have used to pyton binding:
+https://github.com/hzeller/rpi-rgb-led-matrix/tree/master/bindings/python
+rpi-rgb-led-matrix -> bindings -> python
+
+Here sample code can be found
+
+Insert the library master directory into desired source directory.
+
+Import desired features:
+from rpi_rgb_led_matrix_master.bindings.python.samples.samplebase import SampleBase
+from rpi_rgb_led_matrix_master.bindings.python.rgbmatrix import graphics
+
+We use the SampleBase to draw desired pattern pixelwise to the LED matrix. Example implementations can be found on the library github.
+
+How we used the library can be seen in visual_handshake_draw_pattern.py
+
+The examples as well as our code is run from terminal using the following settings:
+sudo ./runtext.py --led-cols=64 --led-rows=32 --led-slowdown-gpio=4 --led-brightness=40 --led-no-hardware-pulse=LED_NO_HARDWARE_PULSE
+
+We used subprocesses to run the drawer function as can be seen in visual_handshake_drone. Here we subscribe to a ROS2 humble topic,
+that publishes values for each LED in the matrix. The pattern is given to the drawer script as a string.
+
